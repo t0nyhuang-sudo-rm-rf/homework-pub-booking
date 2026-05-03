@@ -212,6 +212,15 @@ async def run_scenario(real: bool) -> int:
                 "                    duration_hours=3, catering_tier='bar_snacks')\n"
                 "  4. generate_flyer(event_details={...})  <-- MUST be called\n"
                 "  5. complete_task(result={'flyer': 'workspace/flyer.html', ...})\n\n"
+                "CRITICAL INSTRUCTION FOR CROSS-SUBGOAL MEMORY AND TOOL USAGE:\n"
+                "The executor running these subgoals is stateless and cannot see previous subgoals. "
+                "Therefore, in the description for subgoals 3, 4, and 5, you MUST explicitly include "
+                "this exact sentence: 'Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") "
+                "to get the venue_id and data from previous steps. If you see that a tool's output is already in "
+                "tool_results.json, or if flyer.html already exists, DO NOT re-run that tool. Consider it successfully "
+                "completed and move to the next step.'\n"
+                "ALSO, in the description for subgoal 4, you MUST explicitly include this sentence: "
+                "'You MUST call the generate_flyer tool with the collected event_details. Do NOT just output text.'\n\n"
                 "Do NOT call complete_task until you have called generate_flyer. "
                 "The scenario is graded by the existence of workspace/flyer.html, "
                 "not by your final text response. The flyer is HTML — exact tool "
@@ -246,8 +255,10 @@ async def run_scenario(real: bool) -> int:
             planner=DefaultPlanner(model=planner_model, client=client),
             executor=DefaultExecutor(model=executor_model, client=client, tools=tools),  # type: ignore[arg-type]
         )
-
-        result = await half.run(session, {"task": "research Edinburgh venue and write flyer"})
+        # Pass session instruction to Planner rather than asking it just to research and create flyer...
+        _session_md = session.session_md_path.read_text(encoding="utf-8")
+        _task_text = _session_md.split("## Task description")[-1].split("## Constraints")[0].strip()
+        result = await half.run(session, {"task": _task_text})
         print(f"\nLoop half outcome: {result.next_action}")
         print(f"  summary: {result.summary}")
 
