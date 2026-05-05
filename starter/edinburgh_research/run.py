@@ -80,17 +80,15 @@ def _build_fake_client() -> FakeLLMClient:
         id="c4",
         name="generate_flyer",
         arguments={
-            "event_details": {
-                "venue_name": "Haymarket Tap",
-                "venue_address": "12 Dalry Rd, Edinburgh EH11 2BG",
-                "date": "2026-04-25",
-                "time": "19:30",
-                "party_size": 6,
-                "condition": "cloudy",
-                "temperature_c": 12,
-                "total_gbp": 540,
-                "deposit_required_gbp": 0,
-            }
+            "venue_name": "Haymarket Tap",
+            "venue_address": "12 Dalry Rd, Edinburgh EH11 2BG",
+            "date": "2026-04-25",
+            "time": "19:30",
+            "party_size": 6,
+            "condition": "cloudy",
+            "temperature_c": 12,
+            "total_gbp": 556,
+            "deposit_required_gbp": 111,
         },
     )
     complete_call = ToolCall(
@@ -195,7 +193,7 @@ async def run_scenario(real: bool) -> int:
     # populate _TOOL_CALL_LOG before the real scenario runs.
     clear_log()
 
-    with example_sessions_dir("ex5-edinburgh-research", persist=real) as sessions_root:
+    with example_sessions_dir("ex5-edinburgh-research", persist=True) as sessions_root:
         session = create_session(
             scenario="edinburgh-research",
             task=(
@@ -215,7 +213,7 @@ async def run_scenario(real: bool) -> int:
                 "CRITICAL INSTRUCTION FOR CROSS-SUBGOAL MEMORY AND TOOL USAGE:\n"
                 "The executor running these subgoals is stateless and cannot see previous subgoals. "
                 "Therefore, in the description for subgoals 3, 4, and 5, you MUST explicitly include "
-                "this exact sentence: 'Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") "
+                'this exact sentence: \'Before anything else, call list_files(".") and read_file("tool_results.json") '
                 "to get the venue_id and data from previous steps. If you see that a tool's output is already in "
                 "tool_results.json, or if flyer.html already exists, DO NOT re-run that tool. Consider it successfully "
                 "completed and move to the next step.'\n"

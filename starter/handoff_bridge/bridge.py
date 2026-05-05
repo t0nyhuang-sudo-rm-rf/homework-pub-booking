@@ -198,7 +198,13 @@ def build_reverse_task(loop_result: HalfResult, struct_result: HalfResult) -> di
     return {
         "task": (
             "The structured half rejected the previous proposal. "
-            f"Reason: {reason}. Produce an alternative."
+            f"Reason: {reason}. Produce an alternative.\n\n"
+            "CRITICAL INSTRUCTIONS:\n"
+            "1. Find an alternative venue with venue_search.\n"
+            "2. The executor is stateless. Therefore, in the description for EVERY subgoal, you MUST explicitly include this exact sentence: "
+            "'Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. "
+            "You MUST call the handoff_to_structured tool to submit the booking. The data argument MUST be a dict with keys: "
+            "venue_id, date, time, party_size, deposit_gbp, and catering_tier. NEVER call complete_task directly.'"
         ),
         "context": {
             "prior_result": loop_result.output,

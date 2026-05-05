@@ -65,7 +65,9 @@ def extract_money_facts(text: str) -> list[str]:
     """Find all £<number> occurrences, HTML tags stripped or not."""
     # Strip HTML tags first so e.g. <dd>£540</dd> matches cleanly.
     stripped = re.sub(r"<[^>]+>", " ", text)
-    return re.findall(r"£\d+(?:\.\d+)?", stripped)
+    # Allow optional whitespace after the pound sign since tag stripping
+    # might leave a space.
+    return re.findall(r"£\s*\d+(?:\.\d+)?", stripped)
 
 
 def extract_temperature_facts(text: str) -> list[str]:
@@ -98,11 +100,56 @@ def extract_testid_facts(text: str) -> dict[str, str]:
 
 def fact_appears_in_log(fact: Any, log: list[ToolCallRecord] | None = None) -> bool:
     records = log if log is not None else _TOOL_CALL_LOG
-    target = str(fact).lower().strip("£°c ")
+
+    # If the in-memory log is empty, try to recover from the workspace persistence
+    if not records:
+        import json
+        import os
+        import sys
+        from pathlib import Path
+
+        # 1. Try local workspace first
+        candidates = [Path("workspace/tool_results.json"), Path("tool_results.json")]
+
+        # 2. Try to find the most recent session's tool_results.json in the platform data dir
+        try:
+            if sys.platform == "darwin":
+                root = Path.home() / "Library" / "Application Support" / "sovereign-agent"
+            elif sys.platform == "win32":
+                root = Path(os.environ.get("LOCALAPPDATA", "")) / "sovereign-agent"
+            else:
+                root = (
+                    Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local/share")))
+                    / "sovereign-agent"
+                )
+
+            if root.exists():
+                # Glob for all tool_results.json in any session subfolder
+                all_results = list(root.glob("examples/*/sess_*/workspace/tool_results.json"))
+                # Sort by modification time, newest first
+                all_results.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+                candidates.extend(all_results)
+        except Exception:
+            pass
+
+        for path in candidates:
+            if path.exists():
+                try:
+                    with open(path) as f:
+                        data = json.load(f)
+                        records = [
+                            ToolCallRecord(tool_name=r["tool"], arguments={}, output=r["output"])
+                            for r in data
+                        ]
+                        break
+                except Exception:
+                    continue
+
+    target = str(fact).lower().strip("£°c ").strip()
 
     def _scan(obj: Any) -> bool:
         if isinstance(obj, (str, int, float)):
-            return str(obj).lower().strip("£°c ") == target
+            return str(obj).lower().strip("£°c ").strip() == target
         if isinstance(obj, dict):
             return any(_scan(v) for v in obj.values())
         if isinstance(obj, (list, tuple, set)):

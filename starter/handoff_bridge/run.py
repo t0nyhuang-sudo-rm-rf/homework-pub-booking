@@ -18,6 +18,7 @@ from sovereign_agent.executor import DefaultExecutor
 from sovereign_agent.halves.loop import LoopHalf
 from sovereign_agent.planner import DefaultPlanner
 from sovereign_agent.session.directory import create_session
+from sovereign_agent.config import Config
 
 from starter.edinburgh_research.tools import build_tool_registry
 from starter.handoff_bridge.bridge import HandoffBridge
@@ -123,9 +124,19 @@ def _build_fake_client_two_rounds() -> FakeLLMClient:
 
 async def run_scenario(real: bool) -> int:
     with example_sessions_dir("ex7-handoff-bridge", persist=real) as sessions_root:
+        initial_task = (
+            "Book a venue for 12 people in Haymarket, Friday 19:30.\n\n"
+            "CRITICAL INSTRUCTIONS:\n"
+            "1. Search for venues and calculate costs.\n"
+            "2. You MUST use handoff_to_structured to submit the booking. The 'data' argument MUST be a dictionary containing EXACTLY these keys: "
+            "'venue_id' (string), 'date' (YYYY-MM-DD format like '2026-04-25'), 'time' (HH:MM format like '19:30'), 'party_size' (int), 'deposit_gbp' (int), and 'catering_tier' (string).\n"
+            "3. The executor is stateless. Therefore, in the description for EVERY subgoal, you MUST explicitly include this exact sentence: "
+            "'Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. "
+            "You MUST call the handoff_to_structured tool with all required data keys to submit the booking. NEVER call complete_task directly.'"
+        )
         session = create_session(
             scenario="ex7-handoff-bridge",
-            task="Book a venue for 12 people in Haymarket, Friday 19:30.",
+            task=initial_task,
             sessions_dir=sessions_root,
         )
         print(f"Session {session.session_id}")
@@ -139,11 +150,24 @@ async def run_scenario(real: bool) -> int:
         else:
             rasa_half = RasaStructuredHalf()
 
-        client = _build_fake_client_two_rounds()
+        if real:
+            from sovereign_agent._internal.llm_client import OpenAICompatibleClient
+            config = Config.from_env()
+            client = OpenAICompatibleClient(
+                base_url=config.llm_base_url,
+                api_key_env=config.llm_api_key_env,
+            )
+            planner_model = config.llm_planner_model
+            executor_model = config.llm_executor_model
+        else:
+            client = _build_fake_client_two_rounds()
+            planner_model = "fake"
+            executor_model = "fake"
+
         tools = build_tool_registry(session)
         loop_half = LoopHalf(
-            planner=DefaultPlanner(model="fake", client=client),
-            executor=DefaultExecutor(model="fake", client=client, tools=tools),  # type: ignore[arg-type]
+            planner=DefaultPlanner(model=planner_model, client=client),
+            executor=DefaultExecutor(model=executor_model, client=client, tools=tools),  # type: ignore[arg-type]
         )
         bridge = HandoffBridge(
             loop_half=loop_half,
@@ -152,7 +176,7 @@ async def run_scenario(real: bool) -> int:
         )
 
         try:
-            result = await bridge.run(session, {"task": "book for party of 12 in Haymarket"})
+            result = await bridge.run(session, {"task": initial_task})
         finally:
             if server is not None:
                 server.shutdown()

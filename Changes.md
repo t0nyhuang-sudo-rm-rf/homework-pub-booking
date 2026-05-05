@@ -27,3 +27,26 @@ In addition to implementing the core tools (`venue_search`, `get_weather`, `calc
 ### 6. Weather JSON Traversal Bug
 **Problem**: The `get_weather` tool crashed because it misinterpreted the structure of `weather.json`.
 **Solution**: Refactored the tool to correctly access the nested dictionary schema (`city` -> `date` -> `condition_data`).
+
+## Ex6: Rasa Structured Half Integration
+- **Validation Mapping**: Verified the implementation of `validator.py`, which normalizes the flexible output from the research agent (parsing dates, mapping human names to internal IDs, etc.) into the strict format required by the database.
+- **Execution Engine**: Analyzed `structured_half.py` to understand how the system transitions from the LLM React Loop to a deterministic HTTP request against the Rasa Pro API. It interprets Rasa's response messages to flag a `confirmed` completion or an `escalate` rejection.
+
+## Ex7: Handoff Bridge and Rejection Loops
+We implemented and debugged the `HandoffBridge`, which orchestrates the round-trip interactions between the Loop Half and the Structured Half. Several fixes were required to make this work with live models (especially Qwen-32B).
+
+### 1. Missing Runner Configurations
+**Problem**: The `Makefile` was missing the `ex7-real` target, and `run.py` was hardcoded to use the offline `FakeLLMClient` even when the `--real` flag was passed.
+**Solution**: Added the missing Makefile target and correctly initialized the `OpenAICompatibleClient` by pulling the base URL and API keys from `Config.from_env()`. 
+
+### 2. Guarding the Initial Handoff
+**Problem**: The base task prompt for Ex7 (`"Book a venue for 12..."`) lacked the strict instructions we engineered in Ex5. The LLM repeatedly called `complete_task` instead of handing off to Rasa, or it hallucinated random party sizes.
+**Solution**: Appended critical instructions to the initial task string in `starter/handoff_bridge/run.py` telling the Planner it MUST instruct the Executor to use `handoff_to_structured` and to NEVER call `complete_task`.
+
+### 3. Enforcing the Handoff Schema
+**Problem**: The framework's `handoff_to_structured` tool expects an open-ended `data: dict`. Qwen 32B was either stuffing raw search results into it or completely forgetting to pass required keys like `date` and `time`, leading to instant rejections from the validator.
+**Solution**: We explicitly documented the required schema shape in the instructions: *"The data argument MUST be a dict containing EXACTLY these keys: venue_id, date, time, party_size, deposit_gbp, and catering_tier."*
+
+### 4. Curing "Amnesia" in Reverse Handoffs
+**Problem**: When the agent successfully handed off a booking but Rasa rejected it (e.g., due to the pub being too small for 12 people), the bridge would send back a reverse task (`"Produce an alternative"`). This new prompt overwrote the original task, causing the LLM to completely forget all the tool guardrails and schema rules for Round 2.
+**Solution**: Modified `build_reverse_task` in `starter/handoff_bridge/bridge.py` to explicitly append the strict tool and schema instructions to the rejection message. This ensured the agent remembered how to format its output during subsequent retry loops.

@@ -39,7 +39,18 @@ SILENCE_TIMEOUT_S = 2.0  # consecutive silence to end an utterance
 # Text mode — reference implementation (read this first)
 # ---------------------------------------------------------------------------
 async def run_text_mode(session: Session, persona: ManagerPersona, max_turns: int = 6) -> None:
-    """Conversation via stdin/stdout. Same trace-event shape as voice mode."""
+    """Conversation via stdin/stdout. Same trace-event shape as voice mode.
+    If RIME_API_KEY is present, also speaks the manager's response.
+    """
+    rime_key = os.environ.get("RIME_API_KEY", "").strip()
+    sd = None
+    if rime_key:
+        try:
+            import sounddevice as sd
+        except ImportError:
+            print("ℹ  RIME_API_KEY set but sounddevice not installed. Running in silent text mode.")
+            rime_key = ""
+
     print("Text mode. Type a message to Alasdair (pub manager); blank line to quit.")
     print(f"Session: {session.session_id}")
     print("-" * 60)
@@ -72,6 +83,12 @@ async def run_text_mode(session: Session, persona: ManagerPersona, max_turns: in
                 "payload": {"text": manager_text, "turn": turn_idx, "mode": "text"},
             }
         )
+
+        if rime_key and sd:
+            try:
+                await _speak_rime(manager_text, rime_key, sd)
+            except Exception as e:
+                print(f"   ⚠ TTS playback failed: {e}")
 
     print("-" * 60)
     print(f"Conversation ended. Trace: {session.trace_path}")
@@ -344,7 +361,7 @@ async def _speak_rime(text: str, api_key: str, sd) -> None:
 
     url = "https://users.rime.ai/v1/rime-tts"
     payload = {
-        "speaker": "luna",  # an Arcana voice; change if Rime renames
+        "speaker": "marlu",  # Went with Aussie accent
         "text": text,
         "modelId": "arcana",
         "audioFormat": "mp3",
@@ -355,35 +372,36 @@ async def _speak_rime(text: str, api_key: str, sd) -> None:
         "Accept": "audio/mp3",
     }
 
-    async with httpx.AsyncClient(timeout=30.0) as http:
+    async with httpx.AsyncClient(timeout=None) as http:
         resp = await http.post(url, json=payload, headers=headers)
         if resp.status_code != 200:
-            # Rime sends JSON error for 4xx
             raise RuntimeError(f"Rime {resp.status_code}: {resp.text[:200]}")
-        mp3_bytes = resp.content
+        audio_content = resp.content
 
-    # Decode MP3 → PCM via pydub (stdlib can't handle mp3)
+    # Decode MP3 → PCM via pydub
     try:
         from io import BytesIO
-
-        from pydub import AudioSegment  # type: ignore[import-not-found]
+        from pydub import AudioSegment
     except ImportError:
-        print(
-            "   (pydub not installed; can't decode mp3 for playback — "
-            "install with: uv sync --extra voice)",
-            file=sys.stderr,
-        )
+        print("   (pydub not installed; can't decode audio)")
         return
 
-    segment = AudioSegment.from_file(BytesIO(mp3_bytes), format="mp3")
+    segment = AudioSegment.from_file(BytesIO(audio_content), format="mp3")
+    
     # Resample + convert to int16 mono for sounddevice
     segment = segment.set_frame_rate(SAMPLE_RATE).set_channels(1).set_sample_width(2)
+
+    # ── Buffer Fix: add trailing silence to prevent clipping ───────
+    silence = AudioSegment.silent(duration=1000, frame_rate=SAMPLE_RATE)
+    segment = segment + silence
 
     import numpy as np
 
     samples = np.array(segment.get_array_of_samples(), dtype=np.int16)
     sd.play(samples, samplerate=SAMPLE_RATE)
     sd.wait()
+    # ── Buffer Fix: tiny sleep to let the hardware finish ──────────
+    await asyncio.sleep(0.2)
 
 
 __all__ = ["run_text_mode", "run_voice_mode"]
