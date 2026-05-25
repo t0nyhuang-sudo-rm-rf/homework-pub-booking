@@ -1,0 +1,46 @@
+{
+  "session_id": "sess_f626a7bdced3",
+  "version": 1,
+  "created_at": "2026-05-05T00:13:13.297578+00:00",
+  "updated_at": "2026-05-05T00:18:50.005742+00:00",
+  "scenario": "ex7-handoff-bridge",
+  "state": "failed",
+  "user_id": null,
+  "current_half": "loop",
+  "planner": {
+    "subgoals": [
+      {
+        "id": "sg_1",
+        "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. NEVER call complete_task directly. Search for an alternative venue using venue_search tool.",
+        "success_criterion": "venue_search returns at least one venue with a valid venue_id",
+        "estimated_tool_calls": 3,
+        "depends_on": [],
+        "assigned_half": "loop",
+        "status": "pending"
+      },
+      {
+        "id": "sg_2",
+        "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. NEVER call complete_task directly. Submit the booking using handoff_to_structured tool.",
+        "success_criterion": "handoff_to_structured returns a success response",
+        "estimated_tool_calls": 3,
+        "depends_on": [
+          "sg_1"
+        ],
+        "assigned_half": "structured",
+        "status": "pending"
+      }
+    ]
+  },
+  "executor": {},
+  "structured": {},
+  "memory": {},
+  "handoff_history": [],
+  "bare_mode": false,
+  "config_overrides": {},
+  "result": {
+    "reason": {
+      "reason": "max_rounds=3 exceeded"
+    }
+  },
+  "resumed_from": null
+}

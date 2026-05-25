@@ -1,0 +1,22 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Search for an alternative venue to obtain a valid venue_id",
+    "success_criterion": "venue_search returns a venue_id in the results",
+    "estimated_tool_calls": 1,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Submit the new booking using handoff_to_structured with the venue_id and other required parameters",
+    "success_criterion": "handoff_to_structured returns a successful booking confirmation",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

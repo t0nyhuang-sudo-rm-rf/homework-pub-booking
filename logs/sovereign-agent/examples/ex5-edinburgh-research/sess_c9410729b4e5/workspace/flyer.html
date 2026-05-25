@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Flyer - Haymarket Tap</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        .section { margin-bottom: 20px; }
+        .section-title { font-weight: bold; color: #34495e; text-transform: uppercase; font-size: 0.9em; }
+        .fact { margin: 5px 0; }
+        .label { font-weight: bold; width: 150px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1 data-testid="venue_name">Haymarket Tap</h1>
+    
+    <div class="section">
+        <div class="section-title">Event Details</div>
+        <div class="fact"><span class="label">Address:</span> <span data-testid="venue_address">12 Dalry Rd, Edinburgh EH11 2BG</span></div>
+        <div class="fact"><span class="label">Date:</span> <span data-testid="date">2026-04-25</span></div>
+        <div class="fact"><span class="label">Time:</span> <span data-testid="time">19:30</span></div>
+        <div class="fact"><span class="label">Party Size:</span> <span data-testid="party_size">6</span></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Weather Forecast</div>
+        <div class="fact"><span class="label">Condition:</span> <span data-testid="condition">cloudy</span></div>
+        <div class="fact"><span class="label">Temperature:</span> <span data-testid="temperature_c">12</span>°C</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Cost Breakdown</div>
+        <div class="fact"><span class="label">Total Cost:</span> £<span data-testid="total_gbp">556</span></div>
+        <div class="fact"><span class="label">Deposit Required:</span> £<span data-testid="deposit_required_gbp">111</span></div>
+    </div>
+</body>
+</html>

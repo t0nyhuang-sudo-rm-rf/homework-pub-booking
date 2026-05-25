@@ -1,0 +1,22 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. The data argument MUST be a dict with keys: venue_id, date, time, party_size, deposit_gbp, and catering_tier. NEVER call complete_task directly. Use venue_search to find an alternative venue.",
+    "success_criterion": "venue_search returns at least one valid venue with venue_id",
+    "estimated_tool_calls": 1,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. The data argument MUST be a dict with keys: venue_id, date, time, party_size, deposit_gbp, and catering_tier. NEVER call complete_task directly. Submit the booking using handoff_to_structured with the new venue_id from sg_1.",
+    "success_criterion": "handoff_to_structured returns a success response",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

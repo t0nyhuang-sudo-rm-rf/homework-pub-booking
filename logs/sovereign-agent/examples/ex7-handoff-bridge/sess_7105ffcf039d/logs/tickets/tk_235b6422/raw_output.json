@@ -1,0 +1,22 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Search for venues in Haymarket available on Friday at 19:30 for 12 people",
+    "success_criterion": "List of venues with details including venue_id, cost, deposit, and catering options",
+    "estimated_tool_calls": 1,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Submit booking using handoff_to_structured with the first available venue's details",
+    "success_criterion": "Booking confirmation received",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

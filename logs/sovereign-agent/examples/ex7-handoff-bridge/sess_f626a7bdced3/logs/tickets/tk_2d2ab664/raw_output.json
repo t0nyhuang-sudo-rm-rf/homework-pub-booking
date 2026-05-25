@@ -1,0 +1,22 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. NEVER call complete_task directly. Search for an alternative venue using venue_search.",
+    "success_criterion": "A valid venue_id is found and stored in tool_results.json",
+    "estimated_tool_calls": 3,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. NEVER call complete_task directly. Submit the booking using handoff_to_structured.",
+    "success_criterion": "handoff_to_structured returns a successful booking confirmation",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

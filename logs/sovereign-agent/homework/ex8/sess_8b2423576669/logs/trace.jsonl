@@ -1,0 +1,6 @@
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:21:45.281679+00:00", "payload": {"text": "Hello! Wondering if you guys got space for 8 tonight?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:21:46.377567+00:00", "payload": {"text": "Aye, we can do that. I'll pencil you in for tonight. What's the contact number?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:21:59.795943+00:00", "payload": {"text": "07835144000", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:22:00.605172+00:00", "payload": {"text": "Got it, 07835144000. I've got you down for tonight. See you then.", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:22:15.825073+00:00", "payload": {"text": "Ta ta, cheers mate bye", "turn": 2, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:22:16.480008+00:00", "payload": {"text": "Cheerio.", "turn": 2, "mode": "text"}}

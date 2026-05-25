@@ -4,28 +4,16 @@
 
 ### Your answer
 
-In my Ex7 run (session sess_a382a2149fc1), the planner's second
-subgoal was sg_2 "commit the booking under policy rules" with
-assigned_half: "structured". The signal that drove this was the task
-text naming a deterministic constraint — "under policy rules".
-Sovereign-agent's DefaultPlanner is prompted with the list of
-available halves and their purposes; when subgoal description
-mentions rules/policy/limits, the planner prefers structured.
+In my Ex7 handoff bridge run (session `sess_c53a2a05ce7a`), the planner's second subgoal was assigned to the structured half. The specific subgoal `sg_2` (found in `logs/tickets/tk_f2a3bbdb/raw_output.json`) has `"assigned_half": "structured"`. 
 
-This decision is advisory, not physical. The orchestrator respects
-it only because both halves are wired up. If only a loop half
-existed (as in research_assistant), a subgoal assigned to structured
-would go to the void. That's failure mode #4 from the course slides.
+The signal that caused this decision was the prompt task's critical instruction: *"You MUST use handoff_to_structured to submit the booking."* (This task preview is recorded at line 11 of `logs/trace.jsonl`). 
 
-The broader lesson: the planner makes an architectural decision
-based on prose interpretation. Put the rules somewhere the LLM
-cannot mis-assign — in the structured half's Python — and prose
-ambiguity no longer matters.
+Sovereign-agent's `DefaultPlanner` is guided by its system prompt (defined in `sovereign_agent/planner/__init__.py`), which dictates: *"use 'structured' only for subgoals that need strict rule-following (e.g. a confirmation dialog...)"*. Because the subgoal description explicitly required calling the external `handoff_to_structured` tool (which serves as the IPC boundary to Rasa's validation and confirmation flows), the LLM correctly mapped the subgoal to the structured half.
 
 ### Citation
 
-- sessions/sess_a382a2149fc1/logs/tickets/tk_*/raw_output.json
-- sessions/sess_a382a2149fc1/logs/trace.jsonl:23
+- `logs/sovereign-agent/examples/ex7-handoff-bridge/sess_c53a2a05ce7a/logs/tickets/tk_f2a3bbdb/raw_output.json`
+- `logs/sovereign-agent/examples/ex7-handoff-bridge/sess_c53a2a05ce7a/logs/trace.jsonl:11`
 
 ---
 
@@ -33,47 +21,24 @@ ambiguity no longer matters.
 
 ### Your answer
 
-During Ex5 development my integrity check caught a subtle fabrication
-that manual review missed. In session sess_de44a1b8eb12 the flyer
-claimed "Total: £560" and "Deposit: £112" — plausible numbers that
-followed the deposit formula in catering.json. I skimmed and moved on.
+During Ex5 development, my dataflow integrity check successfully caught a subtle LLM fabrication that manual review would likely miss. In session `sess_34cb72249cf8`, the generated HTML flyer (`workspace/flyer.html` line 33) claimed that the total event cost was "£540" and deposit required was "£0". 
 
-verify_dataflow returned ok=False with unverified_facts=['£560','£112'].
-The trace showed calculate_cost returned total_gbp=540, deposit=0. The
-real total was £540 under the £300 deposit threshold. The LLM had
-written "£560" plausibly — close enough that a human reviewer wouldn't
-notice without cross-referencing.
+However, cross-referencing this flyer with the actual tool outputs in `workspace/tool_results.json` reveals that the `calculate_cost` tool returned `"total_gbp": 556` and `"deposit_required_gbp": 111` for a party of 6 at the Haymarket Tap. The LLM executor had fabricated these lower figures—likely pulling placeholders from its context window or prompt examples—instead of passing the correct outputs from the previous tool. 
 
-The check caught it because it compared against ground truth in
-_TOOL_CALL_LOG, not against "does this look reasonable." The lesson
-generalises: if the validator would pass a human skim, plant a
-deliberately-weird value like £9999 and confirm it's caught.
+The integrity check caught this by verifying every numeric cost and weather fact in `flyer.html` against the `_TOOL_CALL_LOG` entries. Since "540" was never returned by `calculate_cost` or any other tool, the dataflow validator returned `ok=False` and surfaced `'£ 540'` as an unverified fact.
 
 ### Citation
 
-- sessions/sess_de44a1b8eb12/workspace/flyer.md:12
-- sessions/sess_de44a1b8eb12/logs/trace.jsonl:15
+- `logs/sovereign-agent/examples/ex5-edinburgh-research/sess_34cb72249cf8/workspace/flyer.html:33`
+- `logs/sovereign-agent/examples/ex5-edinburgh-research/sess_34cb72249cf8/workspace/tool_results.json`
 
 ---
 
-## Q3 — Removing one framework primitive
+## Q3 — First Production Failure Expected, and which primitive would surface it?
 
 ### Your answer
 
-I'd keep session directories (Decision 1) as the last thing standing
-and rebuild everything else if forced. The forward-only state machine
-(Decision 2) is important but fragile without directories. Tickets
-(Decision 3) I could rebuild as .jsonl files inside the session.
-Atomic-rename IPC (Decision 5) is replaceable by directory polling.
+Assuming we ship this agent with this current architecture to a real pub-booking business, the first production failure I expect is the agent failing to complete bookings because the task prompt lacks essential user context (e.g., customer name, contact details, payment info) or the pub requires a different booking method (e.g., online forms instead of voice calls).
 
-Session directories are the irreplaceable piece. Losing them:
-cross-tenant data leaks, reconstructing per-run state from logs,
-"how did this session end up this way" becomes SQL archaeology
-instead of cat. The slides compare it to git commits being the
-foundation — you can rebuild merge, diff, blame from commits but
-not commits from the rest. Session directories are commits.
+The sovereign-agent primitive that would surface this failure is the Ticket State Machine. When the agent attempts to validate the booking details or initiate the handoff/voice subgoal, the structured validator (or the API client) will raise a validation exception due to these missing parameters or unsupported interfaces. The ticket state machine catches this, transitions the active ticket status in `state.json` to `failed`, and logs the error context. By wrapping these execution steps in state-tracked tickets, the framework guarantees that any failure due to insufficient real-world booking context is immediately captured and visible in the run artifacts, rather than the agent hallucinating info or silently hanging.
 
-### Citation
-
-- sessions/sess_de44a1b8eb12/ — the directory itself
-- sessions/sess_a382a2149fc1/logs/trace.jsonl

@@ -1,0 +1,6 @@
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:39:38.255558+00:00", "payload": {"text": "Hello! do you guys have space for a group of 5 at 8PM tonight?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:39:39.607899+00:00", "payload": {"text": "Aye, we can do that. I'll pencil you in for tonight at 8. What's the contact number?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:39:59.407487+00:00", "payload": {"text": "07835144000", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:40:00.081298+00:00", "payload": {"text": "Got it, 07835144000. You're booked for 8 tonight.", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:40:19.303951+00:00", "payload": {"text": "Ta, see ya", "turn": 2, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:40:19.634692+00:00", "payload": {"text": "See ye tonight then.", "turn": 2, "mode": "text"}}

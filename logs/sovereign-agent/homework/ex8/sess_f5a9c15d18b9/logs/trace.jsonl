@@ -1,0 +1,2 @@
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:42:30.779063+00:00", "payload": {"text": "Hi, is this the Haymarket Tap?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:42:31.437539+00:00", "payload": {"text": "Aye, it is. What can I do for ye?", "turn": 0, "mode": "text"}}

@@ -1,0 +1,1 @@
+Executor completed subgoal sg_1 in 3 turn(s). Made 3 tool call(s): list_files, read_file, handoff_to_structured. Handoff to structured half requested.

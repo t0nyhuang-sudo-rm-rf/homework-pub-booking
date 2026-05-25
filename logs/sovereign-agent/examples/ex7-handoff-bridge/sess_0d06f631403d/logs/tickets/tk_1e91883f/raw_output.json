@@ -1,0 +1,49 @@
+{
+  "subgoal_id": "sg_2",
+  "success": true,
+  "final_answer": "(handoff requested)",
+  "tool_calls_made": [
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "Haymarket",
+        "party_size": 10
+      },
+      "success": true,
+      "summary": "venue_search(Haymarket, party=10): 0 result(s)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "handoff_to_structured",
+      "arguments": {
+        "reason": "No venues found in Haymarket for party of 10",
+        "context": "Venue search returned 0 results with default budget of \u00a31000",
+        "data": {
+          "error": "venue_search_failed",
+          "suggestions": [
+            "Adjust budget",
+            "Try different area",
+            "Reduce party size"
+          ]
+        }
+      },
+      "success": true,
+      "summary": "handoff to structured half: No venues found in Haymarket for party of 10",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 2,
+  "handoff_requested": true,
+  "handoff_payload": {
+    "reason": "No venues found in Haymarket for party of 10",
+    "context": "Venue search returned 0 results with default budget of \u00a31000",
+    "data": {
+      "error": "venue_search_failed",
+      "suggestions": [
+        "Adjust budget",
+        "Try different area",
+        "Reduce party size"
+      ]
+    }
+  }
+}

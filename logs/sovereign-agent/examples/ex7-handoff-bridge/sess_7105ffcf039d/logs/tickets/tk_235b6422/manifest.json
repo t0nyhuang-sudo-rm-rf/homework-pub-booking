@@ -1,0 +1,21 @@
+{
+  "ticket_id": "tk_235b6422",
+  "operation": "planner.plan",
+  "started_at": "2026-05-04T23:07:58.571796+00:00",
+  "completed_at": "2026-05-04T23:08:35.869165+00:00",
+  "duration_ms": 37297,
+  "outputs": [
+    {
+      "path": "/Users/t0nyhuang/Library/Application Support/sovereign-agent/examples/ex7-handoff-bridge/sess_7105ffcf039d/logs/tickets/tk_235b6422/raw_output.json",
+      "sha256": "bdc597f91222f37fcfb61650b48e0c6dce32eedfbe61664e79a25d305850f97b",
+      "size_bytes": 664,
+      "content_type": "application/json"
+    }
+  ],
+  "metrics": {
+    "num_subgoals": 2,
+    "llm_tokens_in": 330,
+    "llm_tokens_out": 5957,
+    "llm_model": "Qwen/Qwen3-Next-80B-A3B-Thinking"
+  }
+}

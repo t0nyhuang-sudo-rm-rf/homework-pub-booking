@@ -1,0 +1,68 @@
+[
+  {
+    "tool": "venue_search",
+    "output": {
+      "near": "Haymarket",
+      "party_size": 12,
+      "results": [],
+      "count": 0
+    }
+  },
+  {
+    "tool": "venue_search",
+    "output": {
+      "near": "Haymarket",
+      "party_size": 10,
+      "results": [],
+      "count": 0
+    }
+  },
+  {
+    "tool": "venue_search",
+    "output": {
+      "near": "Old Town",
+      "party_size": 10,
+      "results": [
+        {
+          "id": "royal_oak",
+          "name": "The Royal Oak",
+          "area": "Old Town",
+          "address": "1 Infirmary St, Edinburgh EH1 1LT",
+          "open_now": true,
+          "seats_available_evening": 16,
+          "hire_fee_gbp": 50,
+          "min_spend_gbp": 400,
+          "manager_email": "royal-oak@example.invalid",
+          "licensed_hours": "11:00-01:00",
+          "accepts_card": true,
+          "outdoor_space": false
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "venue_search",
+    "output": {
+      "near": "Haymarket",
+      "party_size": 4,
+      "results": [
+        {
+          "id": "haymarket_tap",
+          "name": "Haymarket Tap",
+          "area": "Haymarket",
+          "address": "12 Dalry Rd, Edinburgh EH11 2BG",
+          "open_now": true,
+          "seats_available_evening": 8,
+          "hire_fee_gbp": 0,
+          "min_spend_gbp": 200,
+          "manager_email": "haymarket-tap@example.invalid",
+          "licensed_hours": "11:00-00:30",
+          "accepts_card": true,
+          "outdoor_space": false
+        }
+      ],
+      "count": 1
+    }
+  }
+]

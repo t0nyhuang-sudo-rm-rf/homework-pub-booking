@@ -1,0 +1,76 @@
+{
+  "session_id": "sess_351cb9907ff7",
+  "version": 1,
+  "created_at": "2026-05-04T20:08:43.690596+00:00",
+  "updated_at": "2026-05-04T20:09:23.549005+00:00",
+  "scenario": "edinburgh-research",
+  "state": "executing",
+  "user_id": null,
+  "current_half": "loop",
+  "planner": {
+    "subgoals": [
+      {
+        "id": "sg_1",
+        "description": "Search for a pub near Haymarket station accommodating 6 people within budget.",
+        "success_criterion": "venue_search returns a valid venue_id and details in tool_results.json",
+        "estimated_tool_calls": 1,
+        "depends_on": [],
+        "assigned_half": "loop",
+        "status": "pending"
+      },
+      {
+        "id": "sg_2",
+        "description": "Retrieve weather forecast for Edinburgh on 2026-04-25.",
+        "success_criterion": "get_weather returns weather data for the specified date",
+        "estimated_tool_calls": 1,
+        "depends_on": [
+          "sg_1"
+        ],
+        "assigned_half": "loop",
+        "status": "pending"
+      },
+      {
+        "id": "sg_3",
+        "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get the venue_id and data from previous steps. If you see that a tool's output is already in tool_results.json, or if flyer.html already exists, DO NOT re-run that tool. Consider it successfully completed and move to the next step. Calculate the total cost for the event using the venue's details, party size, duration, and catering tier.",
+        "success_criterion": "calculate_cost returns a valid cost estimate in tool_results.json",
+        "estimated_tool_calls": 3,
+        "depends_on": [
+          "sg_2"
+        ],
+        "assigned_half": "loop",
+        "status": "pending"
+      },
+      {
+        "id": "sg_4",
+        "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get the venue_id and data from previous steps. If you see that a tool's output is already in tool_results.json, or if flyer.html already exists, DO NOT re-run that tool. Consider it successfully completed and move to the next step. You MUST call the generate_flyer tool with the collected event_details. Do NOT just output text.",
+        "success_criterion": "workspace/flyer.html exists in the workspace",
+        "estimated_tool_calls": 3,
+        "depends_on": [
+          "sg_2",
+          "sg_3"
+        ],
+        "assigned_half": "loop",
+        "status": "pending"
+      },
+      {
+        "id": "sg_5",
+        "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get the venue_id and data from previous steps. If you see that a tool's output is already in tool_results.json, or if flyer.html already exists, DO NOT re-run that tool. Consider it successfully completed and move to the next step. Call complete_task with the flyer path.",
+        "success_criterion": "complete_task is executed with result containing flyer path",
+        "estimated_tool_calls": 3,
+        "depends_on": [
+          "sg_4"
+        ],
+        "assigned_half": "loop",
+        "status": "pending"
+      }
+    ]
+  },
+  "executor": {},
+  "structured": {},
+  "memory": {},
+  "handoff_history": [],
+  "bare_mode": false,
+  "config_overrides": {},
+  "result": null,
+  "resumed_from": null
+}

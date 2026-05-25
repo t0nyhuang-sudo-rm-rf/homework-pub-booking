@@ -1,0 +1,20 @@
+{
+  "ticket_id": "tk_17c88ba6",
+  "operation": "executor.run_subgoal/sg_1",
+  "started_at": "2026-05-05T00:00:40.887531+00:00",
+  "completed_at": "2026-05-05T00:00:52.256630+00:00",
+  "duration_ms": 11369,
+  "outputs": [
+    {
+      "path": "/Users/t0nyhuang/Library/Application Support/sovereign-agent/examples/ex7-handoff-bridge/sess_c77af6eef5a2/logs/tickets/tk_17c88ba6/raw_output.json",
+      "sha256": "7243c17d3e56868e6a9c70a4575fdcfe247e4dd9aa3f44eb0ed24ab1af631611",
+      "size_bytes": 1350,
+      "content_type": "application/json"
+    }
+  ],
+  "metrics": {
+    "tool_calls": 1,
+    "turns_used": 2,
+    "handoff_requested": false
+  }
+}

@@ -1,0 +1,8 @@
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:44:35.508884+00:00", "payload": {"text": "Hi mate is this the Haymarket Tap?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:44:36.262050+00:00", "payload": {"text": "Aye, it is. What can I do for ye?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:45:38.573686+00:00", "payload": {"text": "Perfect, we have a party of 8 tonight, wondering if you've got space at around 8pm for booking?", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:45:39.587375+00:00", "payload": {"text": "Aye, we can do that. I'll pencil you in for tonight at 8pm. What's the contact number?", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:46:01.016788+00:00", "payload": {"text": "7835144000", "turn": 2, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:46:01.656216+00:00", "payload": {"text": "Got it, 7835144000. See ye at 8pm.", "turn": 2, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:46:20.555144+00:00", "payload": {"text": "Nice, ta!", "turn": 3, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:46:20.877054+00:00", "payload": {"text": "No bother.", "turn": 3, "mode": "text"}}

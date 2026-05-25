@@ -1,0 +1,78 @@
+{
+  "subgoal_id": "sg_1",
+  "success": true,
+  "final_answer": "(handoff requested)",
+  "tool_calls_made": [
+    {
+      "name": "list_files",
+      "arguments": {
+        "path": "."
+      },
+      "success": true,
+      "summary": ".: 0 entries",
+      "requires_human_approval": false
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "path": "tool_results.json"
+      },
+      "success": false,
+      "summary": "[SA_IO_NOT_FOUND] file not found in workspace: tool_results.json",
+      "requires_human_approval": false
+    },
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "Haymarket",
+        "party_size": 2,
+        "budget_max_gbp": 1000
+      },
+      "success": true,
+      "summary": "venue_search(Haymarket, party=2): 1 result(s)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "handoff_to_structured",
+      "arguments": {
+        "reason": "Submit booking with venue search results",
+        "context": "Venue search for Haymarket Friday 19:30 completed",
+        "data": {
+          "venues": [
+            {
+              "id": "haymarket_tap",
+              "name": "Haymarket Tap",
+              "address": "12 Dalry Rd, Edinburgh EH11 2BG",
+              "seats_available": 8,
+              "min_spend_gbp": 200,
+              "licensed_hours": "11:00-00:30",
+              "accepts_card": true
+            }
+          ]
+        }
+      },
+      "success": true,
+      "summary": "handoff to structured half: Submit booking with venue search results",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 3,
+  "handoff_requested": true,
+  "handoff_payload": {
+    "reason": "Submit booking with venue search results",
+    "context": "Venue search for Haymarket Friday 19:30 completed",
+    "data": {
+      "venues": [
+        {
+          "id": "haymarket_tap",
+          "name": "Haymarket Tap",
+          "address": "12 Dalry Rd, Edinburgh EH11 2BG",
+          "seats_available": 8,
+          "min_spend_gbp": 200,
+          "licensed_hours": "11:00-00:30",
+          "accepts_card": true
+        }
+      ]
+    }
+  }
+}

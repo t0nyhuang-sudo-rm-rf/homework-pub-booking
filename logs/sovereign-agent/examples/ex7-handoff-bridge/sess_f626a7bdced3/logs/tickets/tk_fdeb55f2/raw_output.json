@@ -1,0 +1,33 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. NEVER call complete_task directly. Search for venues in Haymarket for Friday 19:30 with 12 people.",
+    "success_criterion": "List of venues in Haymarket available on Friday at 19:30 for 12 people is retrieved",
+    "estimated_tool_calls": 1,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. NEVER call complete_task directly. Calculate costs for the available venues.",
+    "success_criterion": "Cost details (deposit and catering tier) for each venue are calculated",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_3",
+    "description": "Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. You MUST call the handoff_to_structured tool to submit the booking. NEVER call complete_task directly. Submit the booking using handoff_to_structured with venue_id, date, time, party_size, deposit, and catering_tier.",
+    "success_criterion": "Booking is successfully submitted via handoff_to_structured tool",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_2"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

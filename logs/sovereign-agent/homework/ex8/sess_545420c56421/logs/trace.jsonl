@@ -1,0 +1,6 @@
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:50:02.116704+00:00", "payload": {"text": "Goodday, is this the Haymarket Tap?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:50:02.918790+00:00", "payload": {"text": "Aye, it is. What can I do for ye?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:50:37.239877+00:00", "payload": {"text": "Wondering if you guys got space for a party of 12 tonight?", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:50:37.935912+00:00", "payload": {"text": "Sorry, too big. Try The Royal Oak, they can handle larger groups.", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-05T22:50:51.694849+00:00", "payload": {"text": "Ah okay thank you", "turn": 2, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-05T22:50:52.879930+00:00", "payload": {"text": "No bother, good luck findin' a spot.", "turn": 2, "mode": "text"}}
