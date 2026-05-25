@@ -381,13 +381,14 @@ async def _speak_rime(text: str, api_key: str, sd) -> None:
     # Decode MP3 → PCM via pydub
     try:
         from io import BytesIO
+
         from pydub import AudioSegment
     except ImportError:
         print("   (pydub not installed; can't decode audio)")
         return
 
     segment = AudioSegment.from_file(BytesIO(audio_content), format="mp3")
-    
+
     # Resample + convert to int16 mono for sounddevice
     segment = segment.set_frame_rate(SAMPLE_RATE).set_channels(1).set_sample_width(2)
 

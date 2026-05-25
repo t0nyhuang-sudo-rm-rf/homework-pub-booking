@@ -42,3 +42,7 @@ Assuming we ship this agent with this current architecture to a real pub-booking
 
 The sovereign-agent primitive that would surface this failure is the Ticket State Machine. When the agent attempts to validate the booking details or initiate the handoff/voice subgoal, the structured validator (or the API client) will raise a validation exception due to these missing parameters or unsupported interfaces. The ticket state machine catches this, transitions the active ticket status in `state.json` to `failed`, and logs the error context. By wrapping these execution steps in state-tracked tickets, the framework guarantees that any failure due to insufficient real-world booking context is immediately captured and visible in the run artifacts, rather than the agent hallucinating info or silently hanging.
 
+### Citation
+
+- An example of `state.json` is located at `logs/sovereign-agent/examples/ex7-handoff-bridge/sess_c53a2a05ce7a/logs/tickets/tk_f2a3bbdb/state.json`
+

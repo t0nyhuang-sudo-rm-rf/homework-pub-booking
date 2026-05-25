@@ -14,11 +14,11 @@ from sovereign_agent._internal.llm_client import (
     ToolCall,
 )
 from sovereign_agent._internal.paths import example_sessions_dir
+from sovereign_agent.config import Config
 from sovereign_agent.executor import DefaultExecutor
 from sovereign_agent.halves.loop import LoopHalf
 from sovereign_agent.planner import DefaultPlanner
 from sovereign_agent.session.directory import create_session
-from sovereign_agent.config import Config
 
 from starter.edinburgh_research.tools import build_tool_registry
 from starter.handoff_bridge.bridge import HandoffBridge
@@ -131,7 +131,7 @@ async def run_scenario(real: bool) -> int:
             "2. You MUST use handoff_to_structured to submit the booking. The 'data' argument MUST be a dictionary containing EXACTLY these keys: "
             "'venue_id' (string), 'date' (YYYY-MM-DD format like '2026-04-25'), 'time' (HH:MM format like '19:30'), 'party_size' (int), 'deposit_gbp' (int), and 'catering_tier' (string).\n"
             "3. The executor is stateless. Therefore, in the description for EVERY subgoal, you MUST explicitly include this exact sentence: "
-            "'Before anything else, call list_files(\".\") and read_file(\"tool_results.json\") to get context. "
+            '\'Before anything else, call list_files(".") and read_file("tool_results.json") to get context. '
             "You MUST call the handoff_to_structured tool with all required data keys to submit the booking. NEVER call complete_task directly.'"
         )
         session = create_session(
@@ -152,6 +152,7 @@ async def run_scenario(real: bool) -> int:
 
         if real:
             from sovereign_agent._internal.llm_client import OpenAICompatibleClient
+
             config = Config.from_env()
             client = OpenAICompatibleClient(
                 base_url=config.llm_base_url,
